@@ -27,7 +27,7 @@
   let players: Map<string, Player> = new Map()
 
   onMount(() => {
-    socket = io('http://localhost:8080')
+    socket = io(import.meta.env.DEV ? 'http://localhost:8080' : '')
     socket.on('connect', () => {})
 
     socket.on(Events.BONK, (newBonk: Bonk) => {
