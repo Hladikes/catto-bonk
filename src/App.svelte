@@ -1,42 +1,59 @@
 <script lang="ts">
-  import { io } from 'socket.io-client'
-  import { onMount } from 'svelte'
+  import { io, Socket } from 'socket.io-client'
+  import { onDestroy, onMount } from 'svelte'
   import { Events } from '../shared'
+  import BonkControls from './components/BonkControls.svelte'
+  import JoinBox from './components/JoinBox.svelte'
+  import { Sound } from './util/sound';
 
-  import tennisCattoLeftUrl from './assets/tennis-catto-l.png'
-  import tennisCattoRightUrl from './assets/tennis-catto-r.png'
+  import backgroundMusicSrc from './assets/sounds/slow-beams.mp3'
+  import tennisRacketSoundSrc from './assets/sounds/tennis-racket-sound.wav'
+  import sadCatMeowSrc from './assets/sounds/sad-cat-meow.wav'
+  import PlayersList from './components/PlayersList.svelte'
+  import BonksList from './components/BonksList.svelte'
 
-  type Bonk = {
-    bonker: {
-      username: string
-    },
-    left: boolean,
-    fatal: boolean
-  }
+  import type { Bonk, Player } from './types'
 
-  type Player = {
-    id: string,
-    username: string,
-    loses: number
-  }
-
-  let username = ''
-  let joined = false
-  let socket = null
+  let joined: boolean = false
+  let socket: Socket = null
   let bonks: Bonk[] = []
   let players: Map<string, Player> = new Map()
+  let backgroundMusic: Sound = null
+  let tennisRacketSound: Sound = null
+  let sadCatMeowSound: Sound = null
 
   onMount(() => {
+    backgroundMusic = new Sound(backgroundMusicSrc, 0.05, true)
+    tennisRacketSound = new Sound(tennisRacketSoundSrc, 1, false)
+    sadCatMeowSound = new Sound(sadCatMeowSrc, 1, false)
+
     socket = io(import.meta.env.DEV ? 'http://localhost:8080' : '')
     socket.on('connect', () => {})
 
-    socket.on(Events.BONK, (newBonk: Bonk) => {
-      bonks = [ newBonk, ...bonks ]
+    socket.on(Events.JOIN_OK, () => {
+      joined = true
+      backgroundMusic.play()
     })
 
-    socket.on(Events.INIT, (allPlayers: Player[]) => {
+    socket.on(Events.LEAVE_OK, () => {
+      joined = false
+      backgroundMusic.stop()
+      players.clear()
+      bonks = []
+    })
+
+    socket.on(Events.BONK, (newBonk: Bonk) => {
+      bonks = [ newBonk, ...bonks ]
+      tennisRacketSound.play()
+    })
+
+    socket.on(Events.INIT, ({ players: allPlayers, lastBonk }: { players: Player[], lastBonk ?: Bonk }) => {
       allPlayers.forEach(player => players.set(player.id, player))
       players = players
+
+      if (lastBonk) {
+        bonks = [ lastBonk, ...bonks ]
+      }
     })
 
     socket.on(Events.PLAYER_JOINED, (newPlayer: Player) => {
@@ -50,68 +67,36 @@
     })
 
     socket.on(Events.SCORE_UPDATE, ({ playerId, loses }: { playerId: string, loses: number }) => {
+      sadCatMeowSound.play()
       players.get(playerId).loses = loses
       players = players
     })
   })
-
-  const bonk = (left) => {
-    socket.emit('bonk', left)
-  }
-
-  const join = () => {
-    socket.emit(Events.PLAYER_JOIN, username)
-    joined = true
-  }
+  
+  const bonk = (event) => socket.emit('bonk', event.detail)
+  const join = (event) => socket.emit(Events.PLAYER_JOIN, event.detail)
+  const disconnect = () => socket.emit(Events.PLAYER_LEAVE)
+  
+  onDestroy(disconnect)
 
 </script>
 
 <main>
   {#if !joined}
-    <div class="join-container">
-      <input 
-        maxlength="9"
-        placeholder="Username"
-        type="text" 
-        bind:value={ username }>
-      
-      {#if username.replace(/ /g, '').length >= 3}
-        <button on:click={ join }>Join</button>
-      {/if}
-    </div>
+    <JoinBox on:submitUsername={ join } />
   {:else}
     <div class="game-container">
-      <div class="players-list">
-        {#each [...players] as [id, player]}
-          <p>{player.username}: {player.loses}</p>
-        {/each}
-      </div>
+      <PlayersList {players} />
       
       <div class="bonks-container">
-        <div class="bonks-list">
-          {#each bonks as bonk}
-            <div 
-              class="bonk-item"
-              style={ `flex-direction: ${bonk.left ? 'row' : 'row-reverse'}` }>
-              <img 
-                style={ `opacity: ${bonk.fatal ? '0.5' : '1'}` }
-                width="100"
-                src={bonk.left ? tennisCattoLeftUrl : tennisCattoRightUrl} 
-                title={bonk.bonker.username}
-                alt="catto">
-            </div>
-          {/each}
-        </div>
-        
-        <div class="bonks-controls">
-          <button on:click={ () => bonk(true) }>
-            <img src={tennisCattoLeftUrl} alt="catto left">
-          </button>
-          <button on:click={ () => bonk(false) }>
-            <img src={tennisCattoRightUrl} alt="catto right">
-          </button>
-        </div>
+        <BonksList {bonks} />
       </div>
+      
+      <div class="disconnect-container">
+        <button on:click={ disconnect }>Disconnect</button>
+      </div>
+      
+      <BonkControls on:bonkClick={ bonk } />
     </div>
   {/if}
   
@@ -126,106 +111,45 @@
     background-color: hsl(0, 51%, 21%);
   }
 
-  .join-container {
-    padding: 20px;
-    background-color: gray;
-    box-shadow: 10px 10px 0 black;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .join-container > * {
-    font-size: 1.5rem;
-  }
-
-  .join-container > input {
-    background-color: white;
-    padding: 10px;
-    box-shadow: 10px 10px 0 black;
-  }
-
-  .join-container > input:focus {
-    background-color: yellow;
-  }
-
-  .join-container > button {
-    margin-top: 20px;
-    background-color: white;
-    box-shadow: 10px 10px 0 black;
-    padding: 2px;
-  }
-
-  .join-container > button:hover {
-    background-color: yellow;
-    cursor: pointer;
-  }
-
-  .join-container > button:active {
-    transform: translate(5px, 5px);
-    box-shadow: 5px 5px 0 black;
-  }
-
   .game-container {
-    width: 700px;
+    width: 800px;
     height: 500px;
-    display: flex;
-    flex-direction: row;
+    overflow: hidden;
     box-shadow: 10px 10px 0 black;
-  }
-
-  .players-list {
-    width: 200px;
-    padding: 10px;
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    grid-template-rows: auto min-content;
     background-color: #E9671B;
   }
 
   .bonks-container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .bonks-list {
+    overflow: hidden; 
     display: flex; 
     flex-direction: column-reverse;
-    background-image: url(./assets/court.jpg);
-    background-size: 100% 100%;
-    overflow-y: hidden;
-    flex: 1;
   }
 
-  .bonk-item {
+
+  .disconnect-container {
     display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .bonks-controls {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    background-color: #E9671B;
-    padding: 0 20px;
-  }
-
-  .bonks-controls > button {
+  .disconnect-container > button {
+    cursor: pointer;
     background-color: black;
-    box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.4);
-    margin: 10px;
-    display: flex;
+    color: white;
+    box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.5);
+    padding: 15px;
   }
 
-  .bonks-controls > button:hover {
+  .disconnect-container > button:hover {
+    color: black;
     background-color: yellow;
   }
 
-  .bonks-controls > button:active {
+  .disconnect-container > button:active {
     transform: translate(3px, 3px);
-    box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.4);
-  }
-
-  .bonks-controls > button > img {
-    height: 60px;
-    width: 60px;
-    padding: 5px
+    box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
   }
 </style>
