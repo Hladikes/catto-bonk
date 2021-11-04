@@ -45,6 +45,10 @@
     socket.on(Events.BONK, (newBonk: Bonk) => {
       bonks = [ newBonk, ...bonks ]
       tennisRacketSound.play()
+
+      if (newBonk.fatal) {
+        sadCatMeowSound.play()
+      }
     })
 
     socket.on(Events.INIT, ({ players: allPlayers, lastBonk }: { players: Player[], lastBonk ?: Bonk }) => {
@@ -67,7 +71,6 @@
     })
 
     socket.on(Events.SCORE_UPDATE, ({ playerId, score }: { playerId: string, score: number }) => {
-      sadCatMeowSound.play()
       players.get(playerId).score = score
       players = players
     })
