@@ -6,8 +6,11 @@ export const createPlayer = (username) => ({
   id: randomId()
 })
 
-export const createBonk = (username, left, fatal) => ({
-  bonker: { username },
+export const createBonk = (player, left, fatal) => ({
+  bonker: {
+    username: player.username,
+    id: player.id
+  },
   left,
   fatal,
   id: randomId()

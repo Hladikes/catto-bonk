@@ -1,10 +1,12 @@
 export const Events = {
   BONK: 'bonk',
-  PLAYER_JOIN: 'player join',
+  JOIN: 'player join',
   JOIN_OK: 'join ok',
+  JOIN_FAIL: 'join fail',
+  LEAVE: 'leave',
   LEAVE_OK: 'leave ok',
   PLAYER_JOINED: 'player joined',
-  PLAYER_LEAVE: 'player leave',
+  PLAYER_LEFT: 'player left',
   SCORE_UPDATE: 'score update',
   INIT: 'init'
 }
