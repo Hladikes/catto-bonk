@@ -11,7 +11,7 @@
       }
     })
     .sort((p1, p2) => {
-      return p1.loses < p2.loses ? -1 : 1
+      return p1.score > p2.score ? -1 : 1
     })
 </script>
 
@@ -22,11 +22,10 @@
     {#each sortedPlayersList as player (player.id)}
       <div>
         <p>{player.username}</p>
-        <p>{player.loses}</p>
+        <p>{player.score}</p>
       </div>
     {/each}
   </div>
-  <h6>higher the score =<br>worse the player<br>;)</h6>
 </section>
 
 <style>

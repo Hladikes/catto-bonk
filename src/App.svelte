@@ -66,9 +66,9 @@
       players = players
     })
 
-    socket.on(Events.SCORE_UPDATE, ({ playerId, loses }: { playerId: string, loses: number }) => {
+    socket.on(Events.SCORE_UPDATE, ({ playerId, score }: { playerId: string, score: number }) => {
       sadCatMeowSound.play()
-      players.get(playerId).loses = loses
+      players.get(playerId).score = score
       players = players
     })
   })

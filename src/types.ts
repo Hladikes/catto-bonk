@@ -10,5 +10,5 @@ export type Bonk = {
 export type Player = {
   id: string,
   username: string,
-  loses: number
+  score: number
 }

@@ -52,13 +52,12 @@ io.on('connection', socket => {
     
     if (!bonked) bonked = true
 
-    if (isBonkFatal) {
-      player.loses++
-      io.to(ROOM).emit(Events.SCORE_UPDATE, {
-        playerId: player.id,
-        loses: player.loses
-      })
-    }
+    player.score += isBonkFatal ? -3 : 1
+
+    io.to(ROOM).emit(Events.SCORE_UPDATE, {
+      playerId: player.id,
+      score: player.score
+    })
 
     const bonk = createBonk(player.username, newBonkOrientation, isBonkFatal)
 
