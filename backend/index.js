@@ -18,22 +18,34 @@ let lastBonkOrientation = false
 let lastBonk = null
 let bonked = false
 
-io.on('connection', socket => {
+const canPlayerJoin = (username) => {
+  return Array.from(players.values()).every(player => player.username !== username)
+}
 
+io.on('connection', socket => {
   const playerLeave = () => {
     const player = players.get(socket)
     if (!player) return
 
-    io.to(ROOM).emit(Events.PLAYER_LEAVE, player.id)
     socket.leave(ROOM)
     players.delete(socket)
+    io.to(ROOM).emit(Events.PLAYER_LEFT, player.id)
     
-    if (players.size === 0) bonked = false
+    if (players.size === 0) {
+      bonked = false
+      lastBonk = null
+    }
   }
 
-  socket.on(Events.PLAYER_JOIN, username => {
-    username = username.substr(0, 9)
-    const newPlayer = createPlayer(username)
+  socket.on(Events.JOIN, username => {
+    const sanitizedUsername = username.substr(0, 9)
+    const newPlayer = createPlayer(sanitizedUsername)
+
+    if (!canPlayerJoin(sanitizedUsername)) {
+      socket.emit(Events.JOIN_FAIL, 'Username already taken')
+      return
+    }
+
     players.set(socket, newPlayer)
     socket.join(ROOM)    
     socket.emit(Events.INIT, {
@@ -59,7 +71,7 @@ io.on('connection', socket => {
       score: player.score
     })
 
-    const bonk = createBonk(player.username, newBonkOrientation, isBonkFatal)
+    const bonk = createBonk(player, newBonkOrientation, isBonkFatal)
 
     lastBonk = bonk
     lastBonkOrientation = newBonkOrientation
@@ -67,7 +79,7 @@ io.on('connection', socket => {
     io.to(ROOM).emit(Events.BONK, bonk)
   })
 
-  socket.on(Events.PLAYER_LEAVE, () => {
+  socket.on(Events.LEAVE, () => {
     playerLeave()
     socket.emit(Events.LEAVE_OK)
   })
