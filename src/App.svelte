@@ -15,6 +15,7 @@
   import type { Bonk, Player } from './types'
 
   let joined: boolean = false
+  let error: string = ''
   let socket: Socket = null
   let bonks: Bonk[] = []
   let players: Map<string, Player> = new Map()
@@ -31,8 +32,14 @@
     socket.on('connect', () => {})
 
     socket.on(Events.JOIN_OK, () => {
+      error = ''
       joined = true
       backgroundMusic.play()
+    })
+
+    socket.on(Events.JOIN_FAIL, (msg) => {
+      error = msg
+      joined = false
     })
 
     socket.on(Events.LEAVE_OK, () => {
@@ -48,6 +55,11 @@
 
       if (newBonk.fatal) {
         sadCatMeowSound.play()
+      }
+
+      if (bonks.length > 10) {
+        bonks.pop()
+        bonks = bonks
       }
     })
 
@@ -65,7 +77,7 @@
       players = players
     })
 
-    socket.on(Events.PLAYER_LEAVE, (id: string) => {
+    socket.on(Events.PLAYER_LEFT, (id: string) => {
       players.delete(id)
       players = players
     })
@@ -77,8 +89,8 @@
   })
   
   const bonk = (event) => socket.emit('bonk', event.detail)
-  const join = (event) => socket.emit(Events.PLAYER_JOIN, event.detail)
-  const disconnect = () => socket.emit(Events.PLAYER_LEAVE)
+  const join = (event) => socket.emit(Events.JOIN, event.detail)
+  const disconnect = () => socket.emit(Events.LEAVE)
   
   onDestroy(disconnect)
 
@@ -86,7 +98,7 @@
 
 <main>
   {#if !joined}
-    <JoinBox on:submitUsername={ join } />
+    <JoinBox {error} on:submitUsername={ join } />
   {:else}
     <div class="game-container">
       <PlayersList {players} />

@@ -4,6 +4,8 @@
 
   const disptach = createEventDispatcher()
 
+  export let error: string = 'Default error message'
+
   let username: string = ''
   $: isUsernameValid = (username.replace(/ /g, '').length >= 3)
 
@@ -17,7 +19,12 @@
   const submitUsername = () => disptach('submitUsername', username)
 </script>
 
-<div class="join-container">
+<div>
+  {#if error}
+    <h1>ERROR</h1>
+    <h3>{error}</h3>
+  {/if}
+
   <input 
     on:keydown={ onKeyDown }
     maxlength="9"
@@ -33,7 +40,10 @@
 </div>
 
 <style>
-  .join-container {
+  * {
+    font-size: 1.5rem;
+  }
+  div {
     padding: 30px;
     background-color: gray;
     box-shadow: 10px 10px 0 black;
@@ -42,33 +52,40 @@
     align-items: center;
   }
 
-  .join-container > * {
-    font-size: 1.5rem;
+  h1, h3 {
+    color: red;
+    text-shadow: 4px 4px black;
+    margin-bottom: 20px;
   }
 
-  .join-container > input {
+  h3 {
+    font-size: 0.9rem;
+    text-shadow: 3px 3px black;
+  }
+
+  input {
     background-color: white;
     padding: 20px;
     box-shadow: 10px 10px 0 black;
   }
 
-  .join-container > input:focus {
+  input:focus {
     background-color: yellow;
   }
 
-  .join-container > button {
+  button {
     margin-top: 20px;
     background-color: white;
     box-shadow: 10px 10px 0 black;
     padding: 10px;
   }
 
-  .join-container > button:hover {
+  button:hover {
     background-color: yellow;
     cursor: pointer;
   }
 
-  .join-container > button:active {
+  button:active {
     transform: translate(5px, 5px);
     box-shadow: 5px 5px 0 black;
   }
