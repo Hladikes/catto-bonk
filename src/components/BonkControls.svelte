@@ -1,51 +1,71 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte'
-
-  import tennisCattoLeftUrl from '../assets/tennis-catto-l.png'
-  import tennisCattoRightUrl from '../assets/tennis-catto-r.png'
+  import { createEventDispatcher, onDestroy, onMount } from 'svelte'
 
   const disptach = createEventDispatcher()
   const emitBonk = (left: boolean) => disptach('bonkClick', left)
+
+  let isLeftPressed: boolean = false
+  let isRightPressed: boolean = false
+
+  const onKeyDown = (event: KeyboardEvent) => {
+    const key = event.key.toLowerCase()
+
+    if (key === 'a' && !isLeftPressed) {
+      isLeftPressed = true
+      emitBonk(true)
+      return
+    }
+
+    if (key === 'd' && !isRightPressed) {
+      isRightPressed = true
+      emitBonk(false)
+      return
+    }
+  }
+
+  const onKeyUp = () => {
+    isRightPressed = false
+    isLeftPressed = false
+  }
+
+  onMount(() => {
+    document.addEventListener('keydown', onKeyDown)
+    document.addEventListener('keyup', onKeyUp)
+  })
+
+  onDestroy(() => {
+    document.removeEventListener('keydown', onKeyDown)
+    document.removeEventListener('keyup', onKeyUp)
+  })
 </script>
 
-<div class="bonks-controls">
-  <button on:click={ () => emitBonk(true) }>
+<div>
+  <!-- <button on:click={ () => emitBonk(true) }>
     <img src={tennisCattoLeftUrl} alt="catto left">
-  </button>
-  <button on:click={ () => emitBonk(false) }>
+  </button> -->
+  <p class:active={ isLeftPressed }>[A]</p>
+  <p class:active={ isRightPressed }>[D]</p>
+  <!-- <button on:click={ () => emitBonk(false) }>
     <img src={tennisCattoRightUrl} alt="catto right">
-  </button>
+  </button> -->
 </div>
 
 <style>
-  .bonks-controls {
+  div {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
-    background-color: #E9671B;
-    padding: 0 20px;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
   }
 
-  .bonks-controls > button {
-    cursor: pointer;
-    background-color: black;
-    box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.4);
-    margin: 10px;
-    display: flex;
+  p {
+    text-shadow: 2px 2px white;
+    line-height: 1.5rem;
   }
 
-  .bonks-controls > button:hover {
+  p.active {
     background-color: yellow;
-  }
-
-  .bonks-controls > button:active {
-    transform: translate(3px, 3px);
-    box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.4);
-  }
-
-  .bonks-controls > button > img {
-    height: 60px;
-    width: 60px;
-    padding: 5px
+    text-shadow: 2px 2px rgba(0, 0, 0, 0.3);
   }
 </style>

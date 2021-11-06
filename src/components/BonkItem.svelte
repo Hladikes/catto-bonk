@@ -1,8 +1,6 @@
 <script lang="ts">
   import { scale } from 'svelte/transition'
-
-  import tennisCattoLeftSrc from '../assets/tennis-catto-l.png'
-  import tennisCattoRightSrc from '../assets/tennis-catto-r.png'
+  import { getCattoImage } from '../util/catto'
 
   import type { Bonk } from 'src/types'
 
@@ -16,7 +14,7 @@
     <img 
       style={ `opacity: ${bonk.fatal ? '0.5' : '1'}` }
       width="100"
-      src={bonk.left ? tennisCattoLeftSrc : tennisCattoRightSrc} 
+      src={ getCattoImage(0, bonk.left) } 
       alt="catto">
 
     <p style={ `text-align: ${bonk.left ? 'left' : 'right'}` }>{bonk.bonker.username}</p>

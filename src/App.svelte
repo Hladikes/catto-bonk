@@ -4,7 +4,7 @@
   import { Events } from '../shared'
   import BonkControls from './components/BonkControls.svelte'
   import JoinBox from './components/JoinBox.svelte'
-  import { Sound } from './util/sound';
+  import { Sound } from './util/sound'
 
   import backgroundMusicSrc from './assets/sounds/slow-beams.mp3'
   import tennisRacketSoundSrc from './assets/sounds/tennis-racket-sound.wav'
@@ -148,13 +148,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 15px 0;
   }
 
   .disconnect-container > button {
+    --distance: 7px;
     cursor: pointer;
     background-color: black;
     color: white;
-    box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.5);
+    box-shadow: var(--distance) var(--distance) 0 rgba(0, 0, 0, 0.5);
     padding: 15px;
   }
 
@@ -164,7 +166,7 @@
   }
 
   .disconnect-container > button:active {
-    transform: translate(3px, 3px);
-    box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+    --distance: 2px;
+    transform: translate(5px, 5px);
   }
 </style>

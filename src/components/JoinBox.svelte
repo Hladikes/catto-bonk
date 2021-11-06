@@ -1,6 +1,7 @@
 <script lang="ts">
   import { scale } from 'svelte/transition'
   import { createEventDispatcher } from 'svelte'
+  import CattoPicker from './CattoPicker.svelte'
 
   const disptach = createEventDispatcher()
 
@@ -25,6 +26,8 @@
     <h3>{error}</h3>
   {/if}
 
+  <CattoPicker />
+
   <input 
     on:keydown={ onKeyDown }
     maxlength="9"
@@ -44,18 +47,18 @@
     font-size: 1.5rem;
   }
   div {
+    width: 600px;
     padding: 30px;
-    background-color: gray;
+    background-color: darkorange;
     box-shadow: 10px 10px 0 black;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    gap: 20px;
   }
 
   h1, h3 {
     color: red;
     text-shadow: 4px 4px black;
-    margin-bottom: 20px;
   }
 
   h3 {
@@ -66,7 +69,7 @@
   input {
     background-color: white;
     padding: 20px;
-    box-shadow: 10px 10px 0 black;
+    box-shadow: 7px 7px 0 rgba(0, 0, 0, 0.5);
   }
 
   input:focus {
@@ -74,9 +77,10 @@
   }
 
   button {
-    margin-top: 20px;
+    --distance: 7px;
+    align-self: center;
     background-color: white;
-    box-shadow: 10px 10px 0 black;
+    box-shadow: var(--distance) var(--distance) 0 rgba(0, 0, 0, 0.5);
     padding: 10px;
   }
 
@@ -86,7 +90,7 @@
   }
 
   button:active {
-    transform: translate(5px, 5px);
-    box-shadow: 5px 5px 0 black;
+    --distance: 3px;
+    transform: translate(3px, 3px);
   }
 </style>
