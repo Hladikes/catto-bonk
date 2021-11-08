@@ -97,7 +97,7 @@
 
 <main>
   {#if !joined}
-    <JoinBox {error} on:submitUsername={ join } />
+    <JoinBox {error} on:submit={ join } />
   {:else}
     <div class="game-container">
       <PlayersList {players} />

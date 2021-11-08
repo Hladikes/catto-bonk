@@ -14,7 +14,7 @@
     <img 
       style={ `opacity: ${bonk.fatal ? '0.5' : '1'}` }
       width="100"
-      src={ getCattoImage(0, bonk.left) } 
+      src={ getCattoImage(bonk.bonker.catto, bonk.left) } 
       alt="catto">
 
     <p style={ `text-align: ${bonk.left ? 'left' : 'right'}` }>{bonk.bonker.username}</p>

@@ -1,6 +1,8 @@
 export type Bonk = {
   bonker: {
-    username: string
+    username: string,
+    id: string,
+    catto: number
   },
   left: boolean,
   fatal: boolean,

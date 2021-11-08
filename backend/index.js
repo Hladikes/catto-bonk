@@ -37,9 +37,9 @@ io.on('connection', socket => {
     }
   }
 
-  socket.on(Events.JOIN, username => {
+  socket.on(Events.JOIN, ({ username, catto }) => {
     const sanitizedUsername = username.substr(0, 9)
-    const newPlayer = createPlayer(sanitizedUsername)
+    const newPlayer = createPlayer(sanitizedUsername, catto)
 
     if (!canPlayerJoin(sanitizedUsername)) {
       socket.emit(Events.JOIN_FAIL, 'Username already taken')

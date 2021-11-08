@@ -3,21 +3,25 @@
   import { createEventDispatcher } from 'svelte'
   import CattoPicker from './CattoPicker.svelte'
 
-  const disptach = createEventDispatcher()
+  const dispatch = createEventDispatcher()
 
   export let error: string = 'Default error message'
 
   let username: string = ''
+  let catto: number = 0
   $: isUsernameValid = (username.replace(/ /g, '').length >= 3)
 
   const onKeyDown = (event: KeyboardEvent) => {
     if (event.key !== 'Enter') return
     if (!isUsernameValid) return
 
-    submitUsername()
+    submit()
   }
 
-  const submitUsername = () => disptach('submitUsername', username)
+  const submit = () => dispatch('submit', {
+    username,
+    catto
+  })
 </script>
 
 <div>
@@ -26,7 +30,7 @@
     <h3>{error}</h3>
   {/if}
 
-  <CattoPicker />
+  <CattoPicker bind:catto />
 
   <input 
     on:keydown={ onKeyDown }
@@ -38,7 +42,7 @@
   {#if isUsernameValid}
     <button 
       transition:scale={{ duration: 100 }}
-      on:click={ submitUsername }>Join</button>
+      on:click={ submit }>Join</button>
   {/if}
 </div>
 
