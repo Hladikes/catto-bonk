@@ -24,7 +24,7 @@
   })
 </script>
 
-<div>
+<div transition:scale={{ duration: 300 }}>
   {#if error}
     <h1>ERROR</h1>
     <h3>{error}</h3>
@@ -57,6 +57,7 @@
     box-shadow: 10px 10px 0 black;
     display: flex;
     flex-direction: column;
+    position: absolute;
     gap: 20px;
   }
 

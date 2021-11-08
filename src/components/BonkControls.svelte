@@ -40,14 +40,8 @@
 </script>
 
 <div>
-  <!-- <button on:click={ () => emitBonk(true) }>
-    <img src={tennisCattoLeftUrl} alt="catto left">
-  </button> -->
   <p class:active={ isLeftPressed }>[A]</p>
   <p class:active={ isRightPressed }>[D]</p>
-  <!-- <button on:click={ () => emitBonk(false) }>
-    <img src={tennisCattoRightUrl} alt="catto right">
-  </button> -->
 </div>
 
 <style>
@@ -61,6 +55,7 @@
 
   p {
     text-shadow: 2px 2px white;
+    font-size: 1.25rem;
     line-height: 1.5rem;
   }
 

@@ -1,16 +1,17 @@
 <script lang="ts">
   import { io, Socket } from 'socket.io-client'
   import { onDestroy, onMount } from 'svelte'
+  import { scale } from 'svelte/transition'
   import { Events } from '../shared'
+  import { Sound } from './util/sound'
   import BonkControls from './components/BonkControls.svelte'
   import JoinBox from './components/JoinBox.svelte'
-  import { Sound } from './util/sound'
+  import BonksList from './components/BonksList.svelte'
+  import PlayersList from './components/PlayersList.svelte'
 
   import backgroundMusicSrc from './assets/sounds/slow-beams.mp3'
   import tennisRacketSoundSrc from './assets/sounds/tennis-racket-sound.wav'
   import sadCatMeowSrc from './assets/sounds/sad-cat-meow.wav'
-  import PlayersList from './components/PlayersList.svelte'
-  import BonksList from './components/BonksList.svelte'
 
   import type { Bonk, Player, JoinEventData } from './types'
 
@@ -99,7 +100,7 @@
   {#if !joined}
     <JoinBox {error} on:submit={ join } />
   {:else}
-    <div class="game-container">
+    <div transition:scale={{ duration: 300 }} class="game-container">
       <PlayersList {players} />
       
       <div class="bonks-container">
@@ -125,7 +126,12 @@
     background-color: hsl(0, 51%, 21%);
   }
 
+  main > * {
+    position: absolute;
+  }
+
   .game-container {
+    position: absolute;
     width: 800px;
     height: 500px;
     overflow: hidden;
