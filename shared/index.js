@@ -7,8 +7,7 @@ export const Events = {
   LEAVE_OK: 'leave ok',
   PLAYER_JOINED: 'player joined',
   PLAYER_LEFT: 'player left',
-  SCORE_UPDATE: 'score update',
-  INIT: 'init'
+  SCORE_UPDATE: 'score update'
 }
 
 Object.freeze(Events)

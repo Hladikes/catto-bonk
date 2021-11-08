@@ -12,7 +12,7 @@
   import PlayersList from './components/PlayersList.svelte'
   import BonksList from './components/BonksList.svelte'
 
-  import type { Bonk, Player } from './types'
+  import type { Bonk, Player, JoinEventData } from './types'
 
   let joined: boolean = false
   let error: string = ''
@@ -31,8 +31,16 @@
     socket = io(import.meta.env.DEV ? 'http://localhost:8080' : '')
     socket.on('connect', () => {})
 
-    socket.on(Events.JOIN_OK, () => {
-      error = ''
+    socket.on(Events.JOIN_OK, (data: JoinEventData) => {
+      const { players: allPlayers, lastBonk } = data
+      
+      allPlayers.forEach(player => players.set(player.id, player))
+      players = players
+
+      if (lastBonk) {
+        bonks = [ lastBonk, ...bonks ]
+      }
+
       joined = true
       backgroundMusic.play()
     })
@@ -60,15 +68,6 @@
       if (bonks.length > 10) {
         bonks.pop()
         bonks = bonks
-      }
-    })
-
-    socket.on(Events.INIT, ({ players: allPlayers, lastBonk }: { players: Player[], lastBonk ?: Bonk }) => {
-      allPlayers.forEach(player => players.set(player.id, player))
-      players = players
-
-      if (lastBonk) {
-        bonks = [ lastBonk, ...bonks ]
       }
     })
 

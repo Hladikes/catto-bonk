@@ -12,3 +12,8 @@ export type Player = {
   username: string,
   score: number
 }
+
+export type JoinEventData = {
+  players: Player[], 
+  lastBonk ?: Bonk
+}

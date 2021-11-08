@@ -48,11 +48,10 @@ io.on('connection', socket => {
 
     players.set(socket, newPlayer)
     socket.join(ROOM)    
-    socket.emit(Events.INIT, {
+    socket.emit(Events.JOIN_OK, {
       players: Array.from(players.values()),
       lastBonk
     })
-    socket.emit(Events.JOIN_OK)
     io.to(ROOM).emit(Events.PLAYER_JOINED, newPlayer)
   })
 
@@ -61,8 +60,6 @@ io.on('connection', socket => {
     if (!player) return
 
     const isBonkFatal = bonked && (lastBonkOrientation === newBonkOrientation)
-    
-    if (!bonked) bonked = true
 
     player.score += isBonkFatal ? -3 : 1
 
@@ -73,6 +70,7 @@ io.on('connection', socket => {
 
     const bonk = createBonk(player, newBonkOrientation, isBonkFatal)
 
+    bonked = true
     lastBonk = bonk
     lastBonkOrientation = newBonkOrientation
     
