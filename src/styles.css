@@ -6,4 +6,5 @@
   border: 0;
   outline: 0;
   font-family: 'Press Start 2P', cursive;
+  user-select: none;
 }
