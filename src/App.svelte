@@ -117,17 +117,19 @@
   
 </main>
 
-<style>
+<style lang="scss">
   main {
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: hsl(0, 51%, 21%);
-  }
+    & {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: hsl(0, 51%, 21%);
+    }
 
-  main > * {
-    position: absolute;
+    & > * {
+      position: absolute;
+    }
   }
 
   .game-container {
@@ -150,28 +152,33 @@
 
 
   .disconnect-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 15px 0;
+    & {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 15px 0;
+    }
+    
+    button {
+      & {
+        --distance: 7px;
+        cursor: pointer;
+        background-color: black;
+        color: white;
+        box-shadow: var(--distance) var(--distance) 0 rgba(0, 0, 0, 0.5);
+        padding: 15px;
+      }
+
+      &:hover {
+        color: black;
+        background-color: yellow;
+      }
+
+      &:active {
+        --distance: 2px;
+        transform: translate(5px, 5px);
+      }
+    }
   }
 
-  .disconnect-container > button {
-    --distance: 7px;
-    cursor: pointer;
-    background-color: black;
-    color: white;
-    box-shadow: var(--distance) var(--distance) 0 rgba(0, 0, 0, 0.5);
-    padding: 15px;
-  }
-
-  .disconnect-container > button:hover {
-    color: black;
-    background-color: yellow;
-  }
-
-  .disconnect-container > button:active {
-    --distance: 2px;
-    transform: translate(5px, 5px);
-  }
 </style>

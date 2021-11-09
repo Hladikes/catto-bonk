@@ -44,7 +44,7 @@
   <p class:active={ isRightPressed }>[D]</p>
 </div>
 
-<style>
+<style lang="scss">
   div {
     display: flex;
     flex-direction: row;
@@ -54,13 +54,15 @@
   }
 
   p {
-    text-shadow: 2px 2px white;
-    font-size: 1.25rem;
-    line-height: 1.5rem;
-  }
+    & {
+      text-shadow: 2px 2px white;
+      font-size: 1.25rem;
+      line-height: 1.5rem;
+    }
 
-  p.active {
-    background-color: yellow;
-    text-shadow: 2px 2px rgba(0, 0, 0, 0.3);
+    &.active {
+      background-color: yellow;
+      text-shadow: 2px 2px rgba(0, 0, 0, 0.3);
+    }
   }
 </style>

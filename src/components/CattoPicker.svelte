@@ -30,55 +30,66 @@
   </section>
 </main>
 
-<style>
+<style lang="scss">
   h4 {
     text-align: center;
     text-shadow: 2px 2px white;
   }
 
   section {
-    display: grid;
-    grid-template-columns: auto auto auto auto;
-    gap: 20px;
-  }
+    & {
+      display: grid;
+      grid-template-columns: auto auto auto auto;
+      gap: 20px;
+    }
 
-  button.selected {
-    transition: transform 0.15s;
-    transform: translateY(-10px);
-    padding-bottom: 10px;
-    box-shadow: 0 5px 0 yellow, 0 10px 0 green;
-  }
-  button {
-    border-radius: 0;
-    background-color: transparent;
-    position: relative;
-    cursor: pointer;
-  }
+    &:hover {
+      button:not(:hover) {
+        img:not(.shadow) {
+          transition: filter 0.15s, opacity 0.15s;
+          filter: grayscale(100%);
+          opacity: 0.5;
+        }
 
-  section:hover > button:not(:hover) > img:not(.shadow) {
-    transition: filter 0.15s, opacity 0.15s;
-    filter: grayscale(100%);
-    opacity: 0.5;
-  }
+        img.shadow {
+          opacity: 0;
+        }
+      }
+    }
 
-  section:hover > button:not(:hover) > img.shadow {
-    opacity: 0;
-  }
+    button {
+      & {
+        border-radius: 0;
+        background-color: transparent;
+        position: relative;
+        cursor: pointer;
+      }
 
-  img {
-    width: 100%;
-  }
+      &.selected {
+        transition: transform 0.15s;
+        transform: translateY(-10px);
+        padding-bottom: 10px;
+        box-shadow: 0 5px 0 yellow, 0 10px 0 green;
+      }
 
-  img:not(.shadow) {
-    z-index: 999;
-    position: relative;
-  }
+      img {
+        & {
+          width: 100%;
+        }
 
-  img.shadow {
-    position: absolute;
-    left: 4px;
-    top: 4px;
-    filter: brightness(0%);
-    opacity: 0.5;
+        &:not(.shadow) {
+          z-index: 999;
+          position: relative;
+        }
+
+        &.shadow {
+          position: absolute;
+          left: 4px;
+          top: 4px;
+          filter: brightness(0%);
+          opacity: 0.5;
+        }
+      }
+    }
   }
 </style>

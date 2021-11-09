@@ -21,15 +21,21 @@
   </div>
 </section>
 
-<style>
+<style lang="scss">
   section {
-    display: flex;
-    margin: 0 4px;
-  }
+    & {
+      display: flex;
+      margin: 0 4px;
+    }
 
-  section > div > p {
-    font-size: 0.9rem;
-    text-shadow: 1px 1px white;
-    margin-top: 4px;
+    & {
+      div {
+        p {
+          font-size: 0.9rem;
+          text-shadow: 1px 1px white;
+          margin-top: 4px;
+        }
+      }
+    }
   }
 </style>

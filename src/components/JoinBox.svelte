@@ -46,10 +46,11 @@
   {/if}
 </div>
 
-<style>
+<style lang="scss">
   * {
     font-size: 1.5rem;
   }
+  
   div {
     width: 600px;
     padding: 30px;
@@ -72,30 +73,34 @@
   }
 
   input {
-    background-color: white;
-    padding: 20px;
-    box-shadow: 7px 7px 0 rgba(0, 0, 0, 0.5);
-  }
+    & {
+      background-color: white;
+      padding: 20px;
+      box-shadow: 7px 7px 0 rgba(0, 0, 0, 0.5);
+    }
 
-  input:focus {
-    background-color: yellow;
+    &:focus {
+      background-color: yellow;
+    }
   }
 
   button {
-    --distance: 7px;
-    align-self: center;
-    background-color: white;
-    box-shadow: var(--distance) var(--distance) 0 rgba(0, 0, 0, 0.5);
-    padding: 10px;
-  }
+    & {
+      --distance: 7px;
+      align-self: center;
+      background-color: white;
+      box-shadow: var(--distance) var(--distance) 0 rgba(0, 0, 0, 0.5);
+      padding: 10px;
+    }
 
-  button:hover {
-    background-color: yellow;
-    cursor: pointer;
-  }
+    &:hover {
+      background-color: yellow;
+      cursor: pointer;
+    }
 
-  button:active {
-    --distance: 3px;
-    transform: translate(3px, 3px);
+    &:active {
+      --distance: 3px;
+      transform: translate(3px, 3px);
+    }
   }
 </style>
