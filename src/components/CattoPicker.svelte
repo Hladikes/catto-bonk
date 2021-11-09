@@ -24,7 +24,6 @@
         class:selected={ idx === catto } 
         on:click={ () => selectCatto(idx) }>
         <img {src} alt="Catto">
-        <img class="shadow" {src} alt="Catto shadow">
       </button>
     {/each}
   </section>
@@ -43,20 +42,6 @@
       gap: 20px;
     }
 
-    &:hover {
-      button:not(:hover) {
-        img:not(.shadow) {
-          transition: filter 0.15s, opacity 0.15s;
-          filter: grayscale(100%);
-          opacity: 0.5;
-        }
-
-        img.shadow {
-          opacity: 0;
-        }
-      }
-    }
-
     button {
       & {
         border-radius: 0;
@@ -65,29 +50,23 @@
         cursor: pointer;
       }
 
-      &.selected {
-        transition: transform 0.15s;
-        transform: translateY(-10px);
-        padding-bottom: 10px;
-        box-shadow: 0 5px 0 yellow, 0 10px 0 green;
-      }
-
       img {
         & {
+          --shadow-color: rgba(0, 0, 0, 0.5);
           width: 100%;
+          filter: drop-shadow(4px 4px var(--shadow-color));
         }
+      }
 
-        &:not(.shadow) {
-          z-index: 999;
-          position: relative;
+      &:hover {
+        img {
+          --shadow-color: yellow;
         }
+      }
 
-        &.shadow {
-          position: absolute;
-          left: 4px;
-          top: 4px;
-          filter: brightness(0%);
-          opacity: 0.5;
+      &.selected {
+        img {
+          --shadow-color: cyan;
         }
       }
     }
